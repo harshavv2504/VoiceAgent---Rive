@@ -88,7 +88,7 @@ async def startup_event():
         from common.agent_functions import kb_search
     
     if kb_search:
-        logger.info("🔄 Preloading Sentence Transformer model...")
+        logger.info("🔄 Preloading FastEmbed model...")
         kb_search._load_model()
         logger.info("✅ Model preloaded and ready!")
     else:
