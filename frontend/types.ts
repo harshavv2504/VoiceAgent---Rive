@@ -1,0 +1,16 @@
+
+export enum RecordingState {
+  IDLE = 'IDLE',
+  REQUESTING_PERMISSION = 'REQUESTING_PERMISSION',
+  LISTENING = 'LISTENING',
+  PROCESSING = 'PROCESSING',
+  ERROR = 'ERROR',
+}
+
+export enum WebSocketState {
+  CONNECTING = 'CONNECTING',
+  OPEN = 'OPEN',
+  CLOSING = 'CLOSING',
+  CLOSED = 'CLOSED',
+  ERROR = 'ERROR',
+}

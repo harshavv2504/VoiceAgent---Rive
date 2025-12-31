@@ -1,0 +1,7 @@
+{
+  "name": "Voice Animator",
+  "description": "A stunning, minimalist web application with a single microphone button featuring clean animations for voice interaction.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

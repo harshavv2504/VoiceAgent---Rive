@@ -1,0 +1,30 @@
+{
+  "name": "Voice Agent - Indivillage Tech Solutions",
+  "short_name": "Voice Agent",
+  "description": "Interactive Voice Agent with AI-powered conversations and animated avatar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["productivity", "utilities", "entertainment"],
+  "lang": "en",
+  "dir": "ltr"
+}

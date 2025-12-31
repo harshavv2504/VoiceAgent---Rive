@@ -1,0 +1,128 @@
+========================================
+DOCKER HUB + CLOUD RUN DEPLOYMENT GUIDE
+========================================
+
+STEP 1: BUILD FRONTEND
+-----------------------
+cd frontend
+npm run build
+
+This creates backend/static folder with the built frontend.
+
+
+STEP 2: BUILD DOCKER IMAGE
+---------------------------
+cd ..\backend
+
+docker build -t your_dockerhub_username/voicebot-rive:latest .
+
+Replace "your_dockerhub_username" with your actual Docker Hub username.
+
+
+STEP 3: TEST LOCALLY
+---------------------
+docker run -d -p 8000:8000 --name voicebot-test \
+  -e DEEPGRAM_API_KEY=your_key \
+  -e MONGODB_URL=your_mongodb_url \
+  -e DATABASE_NAME=bean_and_brew \
+  -e BUSINESS_NAME="Bean & Brew Coffee Shop" \
+  your_dockerhub_username/voicebot-rive:latest
+
+Test at: http://localhost:8000
+
+Check logs:
+docker logs voicebot-test
+
+Stop container:
+docker stop voicebot-test
+docker rm voicebot-test
+
+
+STEP 4: PUSH TO DOCKER HUB
+---------------------------
+Login to Docker Hub:
+docker login
+
+Push image:
+docker push your_dockerhub_username/voicebot-rive:latest
+
+
+STEP 5: DEPLOY TO CLOUD RUN
+----------------------------
+gcloud run deploy voicebot \
+  --image your_dockerhub_username/voicebot-rive:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --port 8000 \
+  --set-env-vars DEEPGRAM_API_KEY=your_key,MONGODB_URL=your_url,DATABASE_NAME=bean_and_brew
+
+Or use Cloud Run Console:
+1. Go to https://console.cloud.google.com/run
+2. Click "CREATE SERVICE"
+3. Select "Deploy one revision from an existing container image"
+4. Enter: your_dockerhub_username/voicebot-rive:latest
+5. Set port to 8000
+6. Add environment variables
+7. Click "CREATE"
+
+
+ENVIRONMENT VARIABLES NEEDED:
+------------------------------
+DEEPGRAM_API_KEY=your_deepgram_key
+MONGODB_URL=your_mongodb_connection_string
+DATABASE_NAME=bean_and_brew
+BUSINESS_NAME=Bean & Brew Coffee Shop
+BUSINESS_ADDRESS=123 Coffee Street, Seattle, WA 98101
+MEETING_LOCATION=Zoom
+TIMEZONE=America/New_York
+
+Optional (for Google Calendar/Gmail):
+GOOGLE_CREDENTIALS_JSON=
+GOOGLE_TOKEN_GMAIL_JSON=
+GOOGLE_TOKEN_CALENDAR_JSON=
+
+
+QUICK COMMANDS:
+---------------
+# Build
+docker build -t username/voicebot-rive:latest backend/
+
+# Test
+docker run -p 8000:8000 --env-file backend/.env username/voicebot-rive:latest
+
+# Push
+docker push username/voicebot-rive:latest
+
+# Deploy
+gcloud run deploy voicebot --image username/voicebot-rive:latest --platform managed --region us-central1 --allow-unauthenticated --port 8000
+
+
+VERIFY DEPLOYMENT:
+------------------
+1. Check if container runs locally first
+2. Test WebSocket connection
+3. Test voice agent functionality
+4. Check MongoDB connection
+5. Verify knowledge base loads
+6. Then push to Docker Hub
+7. Deploy to Cloud Run
+8. Test production URL
+
+
+TROUBLESHOOTING:
+----------------
+- If build fails: Check if frontend is built (backend/static exists)
+- If container crashes: Check logs with "docker logs container_name"
+- If MongoDB fails: Verify connection string and whitelist Cloud Run IPs
+- If WebSocket fails: Cloud Run supports WebSockets but may timeout after 60min
+- If knowledge base missing: Ensure knowledgebase/ folder is in backend/
+
+
+NOTES:
+------
+- Frontend and backend both served from port 8000
+- WebSocket endpoint: ws://your-url/ws
+- Frontend: http://your-url/
+- API: http://your-url/api
+- Health check: http://your-url/health
