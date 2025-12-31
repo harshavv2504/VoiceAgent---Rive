@@ -129,7 +129,7 @@ class VoiceAgent:
         self._shutdown_event.set()
         
         # End conversation logging
-        self.conversation_logger.end_session()
+        await self.conversation_logger.end_session()
         
         # Cancel all tasks
         await self.cancel_all_tasks()
@@ -273,7 +273,7 @@ class VoiceAgent:
                             content = message_json.get("content")
                             if role and content:
                                 timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                                self.conversation_logger.add_message(role, content, timestamp)
+                                await self.conversation_logger.add_message(role, content, timestamp)
 
                             if message_json.get("role") == "user":
                                 last_user_message = current_time

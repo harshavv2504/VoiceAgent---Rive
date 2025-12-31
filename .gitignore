@@ -45,7 +45,7 @@ logs/
 Thumbs.db
 
 # Conversation logs (optional - uncomment if you don't want to track these)
-# backend/conversation_logs/
+backend/conversation_logs/
 
 # Mock data (optional - uncomment if you don't want to track these)
 # backend/mock_data_outputs/
