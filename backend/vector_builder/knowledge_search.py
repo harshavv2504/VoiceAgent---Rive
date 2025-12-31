@@ -1,12 +1,11 @@
 """
 Knowledge Base Search Module
-Loads FAISS index and provides semantic search functionality.
+Loads FAISS index and provides semantic search functionality using FastEmbed.
 """
 
 import numpy as np
 import faiss
-from sentence_transformers import SentenceTransformer
-from sentence_transformers.util import normalize_embeddings
+from fastembed import TextEmbedding
 from typing import List, Dict, Optional
 import pickle
 import os
@@ -14,9 +13,9 @@ from pathlib import Path
 
 
 class KnowledgeBaseSearch:
-    """Semantic search for Q&A knowledge base using FAISS."""
+    """Semantic search for Q&A knowledge base using FAISS and FastEmbed."""
     
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
+    def __init__(self, model_name: str = "BAAI/bge-small-en-v1.5"):
         self.model = None  # Lazy load
         self.model_name = model_name
         self.index = None
@@ -55,8 +54,9 @@ class KnowledgeBaseSearch:
     def _load_model(self):
         """Load model only when needed (lazy loading)."""
         if self.model is None:
-            print(f"Loading Sentence Transformer model: {self.model_name}")
-            self.model = SentenceTransformer(self.model_name)
+            print(f"Loading FastEmbed model: {self.model_name}")
+            print("💡 Using FastEmbed with ONNX Runtime - lightweight, no PyTorch needed!")
+            self.model = TextEmbedding(model_name=self.model_name)
             print("Model loaded!")
     
     def search(self, query: str, k: int = 3) -> List[Dict]:
@@ -76,10 +76,17 @@ class KnowledgeBaseSearch:
         # Load model on first search
         self._load_model()
         
-        # Generate query embedding
-        query_embedding = self.model.encode([query], convert_to_tensor=True)
-        query_embedding = normalize_embeddings(query_embedding)
-        query_embedding_np = query_embedding.cpu().numpy()
+        # Generate query embedding with query prefix for better retrieval
+        query_with_prefix = f"query: {query}"
+        
+        # FastEmbed returns an iterator
+        embeddings_list = list(self.model.embed([query_with_prefix]))
+        query_embedding_np = np.array(embeddings_list[0], dtype='float32').reshape(1, -1)
+        
+        # Normalize for Inner Product similarity
+        norm = np.linalg.norm(query_embedding_np)
+        if norm > 0:
+            query_embedding_np = query_embedding_np / norm
         
         # Search
         scores, indices = self.index.search(query_embedding_np, k)

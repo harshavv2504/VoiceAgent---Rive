@@ -7,7 +7,7 @@ python-socketio
 python-dotenv
 requests
 python-socketio[asyncio_client]
-sentence-transformers
+fastembed
 faiss-cpu
 numpy
 pymongo

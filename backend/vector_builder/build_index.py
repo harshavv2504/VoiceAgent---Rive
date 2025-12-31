@@ -1,12 +1,11 @@
 """
 Build FAISS Index for Q&A Knowledge Base
-Chunks documents by Q&A pairs and creates vector embeddings.
+Chunks documents by Q&A pairs and creates vector embeddings using FastEmbed.
 """
 
 import numpy as np
 import faiss
-from sentence_transformers import SentenceTransformer
-from sentence_transformers.util import normalize_embeddings
+from fastembed import TextEmbedding
 from typing import List, Dict
 import pickle
 import os
@@ -14,11 +13,13 @@ from pathlib import Path
 
 
 class QAIndexBuilder:
-    """Builds FAISS index from Q&A formatted documents."""
+    """Builds FAISS index from Q&A formatted documents using FastEmbed."""
     
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
-        print(f"Loading Sentence Transformer model: {model_name}")
-        self.model = SentenceTransformer(model_name)
+    def __init__(self, model_name: str = "BAAI/bge-small-en-v1.5"):
+        print(f"Loading FastEmbed model: {model_name}")
+        print("💡 Using FastEmbed with ONNX Runtime - lightweight, no PyTorch needed!")
+        self.model = TextEmbedding(model_name=model_name)
+        self.dimension = 384  # Dimension for bge-small-en-v1.5
         print("Model loaded successfully!")
     
     def chunk_qa_document(self, text: str, doc_name: str) -> List[Dict]:
@@ -119,16 +120,19 @@ class QAIndexBuilder:
         # Extract text for embedding
         texts = [chunk['text'] for chunk in all_chunks]
         
-        print("\n🧠 Generating embeddings...")
-        embeddings = self.model.encode(
-            texts, 
-            convert_to_tensor=True, 
-            show_progress_bar=True
-        )
+        print("\n🧠 Generating embeddings with FastEmbed...")
+        # Add passage prefix for better retrieval performance
+        prefixed_texts = [f"passage: {text}" for text in texts]
+        
+        # FastEmbed returns an iterator
+        embeddings_list = list(self.model.embed(prefixed_texts, batch_size=32))
+        embeddings_np = np.array(embeddings_list, dtype='float32')
         
         print("📐 Normalizing embeddings...")
-        embeddings = normalize_embeddings(embeddings)
-        embeddings_np = embeddings.cpu().numpy()
+        # Normalize for Inner Product similarity
+        norms = np.linalg.norm(embeddings_np, axis=1, keepdims=True)
+        norms = np.where(norms == 0, 1, norms)
+        embeddings_np = embeddings_np / norms
         
         print("🔨 Creating FAISS index...")
         dimension = embeddings_np.shape[1]
