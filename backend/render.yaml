@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: voiceagent-backend
+    runtime: python
+    region: oregon
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PYTHONUNBUFFERED
+        value: 1
+      - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: MONGODB_URL
+        sync: false
+      - key: DATABASE_NAME
+        value: bean_and_brew
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false
+      - key: GOOGLE_TOKEN_GMAIL_JSON
+        sync: false
+      - key: GOOGLE_TOKEN_CALENDAR_JSON
+        sync: false
+      - key: BUSINESS_NAME
+        value: Bean & Brew Coffee Shop
+      - key: BUSINESS_ADDRESS
+        value: 123 Coffee Street, Seattle, WA 98101
+      - key: MEETING_LOCATION
+        value: Zoom
+      - key: TIMEZONE
+        value: America/New_York
+    healthCheckPath: /health
