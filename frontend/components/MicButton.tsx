@@ -13,7 +13,7 @@ const MicIcon = ({ isMuted, isListening }: { isMuted: boolean, isListening: bool
     fill="none"
     stroke="currentColor"
     strokeWidth="1.5"
-    className={`w-6 h-6 transition-transform duration-300 ${isListening && !isMuted ? 'animate-pulse-subtle' : ''}`}
+    className={`w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 ${isListening && !isMuted ? 'animate-pulse-subtle' : ''}`}
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z" />
     <path strokeLinecap="round" strokeLinejoin="round" d="M6 10.5a.75.75 0 0 1 .75.75v1.5a5.25 5.25 0 1 0 10.5 0v-1.5a.75.75 0 0 1 1.5 0v1.5a6.75 6.75 0 1 1-13.5 0v-1.5A.75.75 0 0 1 6 10.5Z" />
@@ -23,7 +23,7 @@ const MicIcon = ({ isMuted, isListening }: { isMuted: boolean, isListening: bool
 
 
 export const MicButton: React.FC<MicButtonProps> = ({ isMuted, isListening, onClick }) => {
-  const baseClasses = "relative flex items-center justify-center rounded-full shadow-lg outline-none focus:outline-none focus:ring-4 transition-all duration-300 ease-in-out border-2 w-16 h-16";
+  const baseClasses = "relative flex items-center justify-center rounded-full shadow-lg outline-none focus:outline-none focus:ring-4 transition-all duration-300 ease-in-out border-2 w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16";
   
   let colorClasses: string;
 
@@ -38,11 +38,11 @@ export const MicButton: React.FC<MicButtonProps> = ({ isMuted, isListening, onCl
   }
 
   return (
-    <div className="relative flex items-center justify-center w-16 h-16">
+    <div className="relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16">
       {isListening && (
         <>
-          <div className="absolute w-16 h-16 bg-blue-500/50 rounded-full animate-ping-slow"></div>
-          <div className="absolute w-16 h-16 bg-blue-500/30 rounded-full animate-ping-medium"></div>
+          <div className="absolute w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-blue-500/50 rounded-full animate-ping-slow"></div>
+          <div className="absolute w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-blue-500/30 rounded-full animate-ping-medium"></div>
         </>
       )}
       <button

@@ -350,21 +350,19 @@ const App: React.FC = () => {
     <div className="relative flex flex-col h-screen w-full bg-gradient-to-br from-blue-950 to-black text-white font-sans overflow-hidden">
         <ParticleBackground audioLevel={isMuted ? 0 : audioLevel} bassLevel={isMuted ? 0 : bassLevel} />
         
-        <div className="z-10 flex flex-col h-full w-full">
-            <header className="flex-shrink-0 pt-16 text-center">
-                <h1 className="text-5xl md:text-6xl text-white tracking-tight font-mono underline">
+        <div className="z-10 flex flex-col h-full w-full py-2">
+            <header className="flex-shrink-0 text-center px-4 py-2">
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white tracking-tight font-mono underline leading-tight">
                     {import.meta.env.VITE_BUSINESS_NAME || 'Bean & Brew Coffee Shop'}
                 </h1>
-                <p className="mt-8 text-3xl md:text-4xl text-gray-300 font-mono">Voice Agent</p>
-                <div className="h-10 mt-4 flex items-center justify-center">
-                    {recorderError && <p className="text-yellow-400">{recorderError}</p>}
-                </div>
+                <p className="mt-1 text-lg sm:text-xl md:text-2xl text-gray-300 font-mono leading-tight">Voice Agent</p>
+                {recorderError && <p className="text-yellow-400 text-xs md:text-sm px-4 mt-1">{recorderError}</p>}
             </header>
 
-            <main className="flex-grow flex flex-col items-center justify-center p-4">
-              <div className="flex flex-col items-center space-y-8">
+            <main className="flex-1 flex flex-col items-center justify-center px-4 py-2 min-h-0">
+              <div className="flex flex-col items-center w-full max-w-4xl mx-auto h-full justify-center gap-2 md:gap-3">
                 <div 
-                  className="w-[500px] h-[500px] rounded-lg shadow-xl overflow-hidden"
+                  className="w-full max-w-[min(45vh,90vw)] aspect-square rounded-lg shadow-xl overflow-hidden flex-shrink-0"
                   style={{
                     backgroundImage: 'url(/office_background.jpg)',
                     backgroundSize: 'cover',
@@ -377,10 +375,10 @@ const App: React.FC = () => {
                     isTalking={isAudioPlaying}
                   />
                 </div>
-                <div className="relative w-[800px] h-[120px] p-4 bg-white/5 border border-white/10 rounded-lg shadow-lg backdrop-blur-sm overflow-hidden animate-shimmer hide-scrollbar overflow-y-auto">
-                  <p className="text-gray-300 text-center text-xl">{displayText}</p>
+                <div className="relative w-full max-w-3xl h-[12vh] min-h-[80px] max-h-[120px] p-2 md:p-3 bg-white/5 border border-white/10 rounded-lg shadow-lg backdrop-blur-sm overflow-hidden animate-shimmer hide-scrollbar overflow-y-auto flex-shrink-0">
+                  <p className="text-gray-300 text-center text-sm md:text-base lg:text-lg leading-snug">{displayText}</p>
                 </div>
-                <div className="flex flex-col items-center space-y-4">
+                <div className="flex flex-col items-center gap-2 md:gap-3 w-full flex-shrink-0">
                   <MicButton 
                     isMuted={isMuted}
                     isListening={recordingState === RecordingState.LISTENING}
@@ -389,7 +387,7 @@ const App: React.FC = () => {
                   {connectionState !== WebSocketState.OPEN && (
                     <button
                       onClick={toggleConnection}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                      className="px-4 py-1.5 md:px-6 md:py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base rounded-lg transition-colors"
                     >
                       Connect WebSocket
                     </button>
